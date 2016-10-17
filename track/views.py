@@ -88,7 +88,9 @@ def upload_delete(request, upload_id, confirmed):
 
 @login_required
 def upload_link_save(upload, links_text):
+  from django.db import IntegrityError
   from zlib import crc32
+
   link_crc32 = crc32(re.sub(r'([\n\r\t ]|\<.*)', '', links_text).encode())
 
   if upload.link_crc32 != link_crc32:
@@ -109,11 +111,11 @@ def upload_link_save(upload, links_text):
     l.host_id = l.get_host()
     l.save()
     if l.host_id not in host_list:
-      upload_host = Upload_Host(upload_id = upload.id, host_id = l.host_id)
-      upload_host.save()
-      if not Host.objects.exists(pk=l.host_id):
-        host = Host(hostname = l.host_id)
-        host.save()
+      Upload_Host(upload_id = upload.id, host_id = l.host_id).save()
+      try:
+        Host(hostname = l.host_id).save(force_insert = True)
+      except IntegrityError:
+        pass
       host_list.append(l.host_id)
 
   host_list.sort()
