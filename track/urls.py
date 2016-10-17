@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^upload-save/(?P<upload_id>[0-9]*)$', views.upload_save, name='upload-save'),
     url(r'^upload-delete/(?P<upload_id>[0-9]+)(?P<confirmed>[a-z]+)$', views.upload_delete, name='upload-delete'),
     url(r'^upload/(?P<upload_id>[0-9]+)$', views.upload_view, name='upload-view'),
+    url(r'^upload-raw/(?P<upload_id>[0-9]+)$', views.upload_raw, name='upload-raw'),
 
     url(r'^title-list/$', views.title_list, name='title-list'),
     url(r'^title-edit/(?P<title_id>[0-9]*)$', views.title_edit, name='title-edit'),

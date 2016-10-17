@@ -123,6 +123,11 @@ def upload_link_save(upload, links_text):
 
   upload.save()
 
+@login_required
+def upload_raw(request, upload_id):
+  link_list = get_object_or_404(Upload, pk=upload_id).link_set.values_list('link_url', flat=True)
+  return HttpResponse("\n".join(link_list), content_type='text/plain')
+
 #
 # Title
 #
