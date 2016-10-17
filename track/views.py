@@ -4,12 +4,19 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import get_list_or_404, get_object_or_404, render
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import SuspiciousOperation
 from .models import Upload, Title, Release, Link, Host, Upload_Host
 
 # Create your views here.
 def index(request):
   upload_list = Upload.objects.all().order_by('-pub_date')
   return render(request, 'track/index.html', {'upload_list': upload_list})
+
+#
+# Unauthorized
+#
+def unauthorized():
+  return HttpResponseRedirect(reverse('track:index', args=()))
 
 #
 # Upload
@@ -29,6 +36,8 @@ def upload_edit_error(request, upload_id, error):
 
   if upload_id != '0':
     upload = get_object_or_404(Upload, pk=upload_id)
+    if not request.user.is_staff and upload.user.id != request.user.id:
+      return unauthorized()
 
   if request.POST.get('title_id') or "" != "":
     title_id = int(request.POST.get('title_id'))
@@ -59,6 +68,8 @@ def upload_save(request, upload_id):
 
   if upload_id != '0':
     u = get_object_or_404(Upload, pk=upload_id)
+    if not request.user.is_staff and u.user.id != request.user.id:
+      return unauthorized()
     u.upload_text = request.POST.get('upload_text')
     u.release_id = request.POST.get('release_id')
   else:
@@ -74,17 +85,18 @@ def upload_save(request, upload_id):
   return HttpResponseRedirect(reverse('track:upload-view', args=(u.id,)))
 
 @login_required
-def upload_delete(request, upload_id, confirmed):
-  upload = Upload.objects.get(pk=upload_id)
-  title_id = upload.release.title.id
-  if confirmed == "yes":
-    try:
-      upload.delete()
-    except:
-      pass
-  elif confirmed == "no":
-    return render(request, 'track/upload-delete.html', {'upload': get_object_or_404(Upload, pk=upload_id)})
-  return HttpResponseRedirect(reverse('track:title-view', args=(title_id,)))
+def upload_delete(request, upload_id):
+  try:
+    upload = get_object_or_404(Upload, pk=upload_id)
+    if not request.user.is_staff and request.user.id != upload.user.id:
+      return unauthorized()
+  except:
+    return HttpResponseRedirect(reverse('track:index', args=()))
+  if 'sure' in request.GET:
+    title_id = upload.release.title.id
+    upload.delete()
+    return HttpResponseRedirect(reverse('track:title-view', args=(title_id,)))
+  return render(request, 'track/upload-delete.html', {'upload': upload})
 
 @login_required
 def upload_link_save(upload, links_text):
@@ -147,10 +159,15 @@ def title_edit_error(request, title_id, error):
 
 @login_required
 def title_edit(request, title_id):
+  if not request.user.is_staff:
+    return unauthorized()
   return title_edit_error(request, title_id, '')
 
 @login_required
 def title_save(request, title_id):
+  if not request.user.is_staff:
+    return unauthorized()
+
   if request.POST.get('title_text').strip() == '':
     return title_edit_error(request, title_id, "El títol no pot estar buit")
 
@@ -184,15 +201,17 @@ def title_save(request, title_id):
   return HttpResponseRedirect(reverse('track:title-view', args=(t.id,)))
 
 @login_required
-def title_delete(request, title_id, confirmed):
-  if confirmed == "yes":
-    try:
-      Title.objects.get(pk=title_id).delete()
-    except:
-      pass
-  elif confirmed == "no":
-    return render(request, 'track/title-delete.html', {'title': get_object_or_404(Title, pk=title_id)})
-  return HttpResponseRedirect(reverse('track:title-list', args=()))
+def title_delete(request, title_id):
+  try:
+    if not request.user.is_staff:
+      return unauthorized()
+    title = get_object_or_404(Title, pk=title_id)
+  except:
+    return HttpResponseRedirect(reverse('track:index', args=()))
+  if 'sure' in request.GET:
+    title.delete()
+    return HttpResponseRedirect(reverse('track:title-list', args=()))
+  return render(request, 'track/title-delete.html', {'title': title})
 
 #
 # Release
@@ -200,8 +219,12 @@ def title_delete(request, title_id, confirmed):
 @login_required
 def release_edit_error(request, title_id, release_id, error):
   release = None
+
   if release_id != '0':
     release = get_object_or_404(Release, pk=release_id)
+    if not request.user.is_staff and release.user.id != request.user.id:
+      return unauthorized()
+
   title = get_object_or_404(Title, pk=title_id)
   return render(request, 'track/release-edit.html', {'title': title, 'release': release, 'error_message': error})
 
@@ -227,6 +250,8 @@ def release_save(request, title_id, release_id):
 
   if release_id != '0':
     r = get_object_or_404(Release, pk=release_id)
+    if not request.user.is_staff and r.user.id != request.user.id:
+      return unauthorized()
     r.release_text = request.POST.get('release_text').strip()
     r.video_text = request.POST.get('video_text').strip()
     r.audio_text = request.POST.get('audio_text').strip()
@@ -254,15 +279,17 @@ def release_save(request, title_id, release_id):
   return HttpResponseRedirect(reverse('track:title-view', args=(title_id,)))
 
 @login_required
-def release_delete(request, title_id, release_id, confirmed):
-  if confirmed == "yes":
-    try:
-      Release.objects.get(pk=release_id).delete()
-    except:
-      pass
-  elif confirmed == "no":
-    return render(request, 'track/release-delete.html', {'release': get_object_or_404(Release, pk=release_id)})
-  return HttpResponseRedirect(reverse('track:title-view', args=(title_id,)))
+def release_delete(request, title_id, release_id):
+  try:
+    release = get_object_or_404(Release, pk=release_id)
+    if not request.user.is_staff and request.user.id != release.user.id:
+      return unauthorized()
+  except:
+    return HttpResponseRedirect(reverse('track:index', args=()))
+  if 'sure' in request.GET:
+    release.delete()
+    return HttpResponseRedirect(reverse('track:title-view', args=(title_id,)))
+  return render(request, 'track/release-delete.html', {'release': release})
 
 @login_required
 def release_upload(request, title_id, release_id):

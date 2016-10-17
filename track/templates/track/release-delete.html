@@ -11,7 +11,7 @@
   <br />
   <br />
   <br />
-  <span class='dialog-button'><a href="{% url 'track:release-delete' release.title.id release.id 'yes' %}">Sí</a></span>
+  <span class='dialog-button'><a href="{% url 'track:release-delete' release.title.id release.id %}?sure">Sí</a></span>
   <span class='dialog-button'><a href="{% url 'track:title-view' release.title.id %}">No</a></span>
 </div>
 {% endblock %}

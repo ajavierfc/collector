@@ -9,7 +9,7 @@
           <a class='mar1' href="{% url 'track:title-view' title.id %}">{{ title.title_text }}</a>
           {% if user.is_staff or user.is_authenticated and title.status == 0 %}
           <span style='float:right'>
-            {% if user.is_staff %}<a href="{% url 'track:title-delete' title.id 'no' %}">Borrar</a>&nbsp;{% endif %}
+            {% if user.is_staff %}<a href="{% url 'track:title-delete' title.id %}">Borrar</a>&nbsp;{% endif %}
             <a href="{% url 'track:title-edit' title.id %}">Editar</a>
           </span>
           {% endif %}

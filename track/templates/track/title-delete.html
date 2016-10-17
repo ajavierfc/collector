@@ -5,7 +5,7 @@
   <span>Confirmeu que voleu esborrar el anime "<strong>{{ title.title_text }}</strong>"?</span>
   <br />
   <br />
-  <span class='dialog-button'><a href="{% url 'track:title-delete' title.id 'yes' %}">Sí</a></span>
+  <span class='dialog-button'><a href="{% url 'track:title-delete' title.id %}?sure">Sí</a></span>
   <span class='dialog-button'><a href="{% url 'track:title-view' title.id %}">No</a></span>
 </div>
 {% endblock %}

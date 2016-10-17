@@ -39,7 +39,7 @@
   {% if user.is_authenticated %}
   <tr><td colspan='2' style='text-align: right'>
     {% if user.is_staff or title.status == 0 %}
-      {% if user.is_staff %}<a href="{% url 'track:title-delete' title.id 'no' %}" >Borrar</a>&nbsp;{% endif %}
+      {% if user.is_staff %}<a href="{% url 'track:title-delete' title.id %}" >Borrar</a>&nbsp;{% endif %}
       <a href="{% url 'track:title-edit' title.id %}" >Editar</a>&nbsp;
     {% endif %}
     <a href="{% url 'track:release-edit' title.id 0 %}">Nova release</a>
@@ -60,7 +60,7 @@
       {% if user.is_authenticated %}
         <span style='float:right'>
           {% if user.id == release.user.id or user.is_staff %}
-          <a href="{% url 'track:release-delete' title.id release.id 'no' %}">Borrar</a>&nbsp;
+          <a href="{% url 'track:release-delete' title.id release.id %}">Borrar</a>&nbsp;
           <a href="{% url 'track:release-edit' title.id release.id %}">Editar</a>&nbsp;
           {% endif %}
           <a href="{% url 'track:release-upload' title.id release.id %}">Afegir distribució</a>

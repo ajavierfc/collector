@@ -39,11 +39,14 @@
 
 <table width=100%>
   <tr><td class='table-header' colspan='3'><center><h2>Descàrrega</h2></center></td></tr>
-  {% if user.id == upload.user.id or user.is_staff %}
+  {% if user.is_authenticated %}
   <tr>
     <td colspan='3' class='infod' style='text-align: right'>
-      <a href="{% url 'track:upload-delete' upload.id 'no' %}">Borrar</a>&nbsp;
+      <a href="{% url 'track:upload-raw' upload.id %}">Raw</a>&nbsp;
+      {% if user.id == upload.user.id or user.is_staff %}
+      <a href="{% url 'track:upload-delete' upload.id %}">Borrar</a>&nbsp;
       <a href="{% url 'track:upload-edit' upload.id %}">Editar</a>
+      {% endif %}
     </td>
   </tr>
   {% endif %}
