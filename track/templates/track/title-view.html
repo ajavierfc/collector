@@ -1,0 +1,87 @@
+{% extends "track/base.html" %}
+
+{% block content %}
+<table width=100%>
+  <tr>
+    <td class='infod' width=160><img width=160 src="{{ title.cover_url }}" /></td>
+    <td class='infod'><br /><center><h2>{{ title.title_text }}</h2>
+    <p class='pad2'>{{ title.summary_text }}</p></center></td>
+  </tr>
+</table>
+
+<table width=100%>
+  {% if title.year_start != 0 %}
+    <tr>
+      <td class='infot'>{% if title.year_end == 0 or title.year_start == title.year_end %}Any d'emissió{% else %}Primer any d'emissió{% endif %}</td>
+      <td class='infod'>{{ title.year_start }}</td>
+    </tr>
+    {% if title.year_end != 0 and title.year_end != title.year_start %}
+    <tr>
+      <td class='infot'>Últim any d'emissió</td><td class='infod'>{{ title.year_end }}</td>
+    </tr>
+    {% endif %}
+  {% endif %}
+  {% if title.episodes != 0 %}
+  <tr>
+    <td class='infot'>Nombre d'episodis</td><td class='infod'>{{ title.episodes }}</td>
+  </tr>
+  {% endif %}
+  {% if title.runtime_minutes != 0 %}
+  <tr>
+    <td class='infot'>Duració per capítol</td><td class='infod'>{{ title.runtime_minutes }} minuts</td>
+  </tr>
+  {% endif %}
+  {% if title.status == 0 %}
+  <tr>
+    <td class='infot'>Estat de verificació</td><td class='infod'>Pendent de verificació</td>
+  </tr>
+  {% endif %}
+  {% if user.is_authenticated %}
+  <tr><td colspan='2' style='text-align: right'>
+    {% if user.is_staff or title.status == 0 %}
+      {% if user.is_staff %}<a href="{% url 'track:title-delete' title.id 'no' %}" >Borrar</a>&nbsp;{% endif %}
+      <a href="{% url 'track:title-edit' title.id %}" >Editar</a>&nbsp;
+    {% endif %}
+    <a href="{% url 'track:release-edit' title.id 0 %}">Nova release</a>
+  </td></tr>
+  {% endif %}
+</table>
+
+<br /><br />
+
+<table width=100%>
+  <tr><td colspan='3' class='table-header'><center>
+    <h2>Projectes</h2>
+  </center></td></tr>
+  {% for release in title.get_release_list %}
+  <tr>
+    <td class='infot'><h3>{{ release.release_text|default:release.title.title_text }}</h3></td>
+    <td class='infod'>
+      {% if user.is_authenticated %}
+        <span style='float:right'>
+          {% if user.id == release.user.id or user.is_staff %}
+          <a href="{% url 'track:release-delete' title.id release.id 'no' %}">Borrar</a>&nbsp;
+          <a href="{% url 'track:release-edit' title.id release.id %}">Editar</a>&nbsp;
+          {% endif %}
+          <a href="{% url 'track:release-upload' title.id release.id %}">Afegir distribució</a>
+        </span>
+      {% endif %}
+      <span>{{ release.user }} - {{ release.pub_date|date:'d.m.Y' }}<span>
+      {% if release.video_text != '' %}<br /><span class='small'>{{ release.video_text }}</span>{% endif %}
+      {% if release.audio_text != '' %}<br /><span class='small'>{{ release.audio_text }}</span>{% endif %}
+      {% if release.subs_text != '' %}<br /><span class='small'>Subtítols: {{ release.subs_text }}</span>{% endif %}
+    </td>
+  </td></tr>
+  {% for upload in release.get_upload_list %}
+  <tr>
+    <td>&nbsp;</td>
+    <td class='infod'><a href="{% url 'track:upload-view' upload.id %}">
+      {{ upload.pub_date|date:'d.m.Y' }} - {{ upload.user }} - [{{ upload.host_list }}]
+    </a>
+    </td>
+  </tr>
+  {% endfor %}
+  {% if not forloop.last %}<tr><td>&nbsp;</td><td>&nbsp;</td></tr>{% endif %}
+  {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,194 @@
+#banner {
+  width: 840px;
+  left: 50%;
+  margin-left: -420px;
+  position: relative;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  background: gradient;
+  background: #ddd;
+  background: linear-gradient(#ccc, #ddd);
+  background: -moz-linear-gradient(top bottom, #ccc, #ddd);
+  background: linear-gradient(to top bottom, #ccc, #ddd);
+}
+
+#headbar {
+  width: 840px;
+  left: 50%;
+  margin-left: -420px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  background: #ddd;
+  position: relative;
+  min-height: 30px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  text-align: left;
+}
+
+#content {
+  background: #eee;
+  width: 820px;
+  position: relative;
+  left: 50%;
+  margin-left: -420px;
+  margin-bottom: 10px;
+  padding: 10px;    
+  border: 1px solid #ccc;
+}
+
+a {
+  color: #a00;
+}
+
+body {
+  background: #ddd;
+}
+
+td, body, input, select {
+  font-family: 'Verdana', 'DejaVu Sans';
+  font-size: 0.9em
+}
+
+input, textarea, select {
+  border: 1px solid #999;
+}
+
+select {
+  min-width: 160px
+}
+
+input, select, option {
+  height: 30px;
+  padding: 5px;
+}
+
+input, select, option, textarea {
+  margin-top: 5px
+}
+
+.h1 {
+  color: #a00;
+  font-size: 1.2em;
+}
+
+h2 {
+  color: #a00;
+  font-size: 1.5em;
+  display: inline;
+}
+
+h3 {
+  color: #a00;
+  font-size: 1.2em;
+  padding: 4px;
+  margin: 0px;
+}
+
+label {
+  font-size: 0.8em;
+  height: 20px;
+  spacing: 30px;
+  font-style: oblique
+}
+
+.smaller { font-size: 0.7em } 
+.small { font-size: 0.8em } 
+.medium { font-size: 0.85em } 
+.big { font-size: 0.9em }
+
+.header-button:hover a {
+  background: #a00;
+}
+
+.header-button a {
+  text-decoration: none;
+  padding: 8px;
+  background: #aaa;
+  border: 0px solid #888;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.dialog {
+  text-align: center;
+  border: 1px dotted black;
+  margin: 10px;
+  padding: 50px
+}
+
+.dialog-button:hover a {
+  background: #07a
+}
+
+.dialog-button a {
+  text-decoration: none;
+  padding: 8px;
+  background: #aaa;
+  border: 0px solid #888;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.table-header {
+  padding: 00px 0px 20px 0px
+}
+
+.tdlist {
+  border: 1px dotted black;
+}
+
+.mar1 {
+  margin: 5px
+}
+
+.mar2 {
+  margin: 10px
+}
+
+.pad1 {
+  padding: 5px
+}
+
+.pad2 {
+  padding: 10px
+}
+
+.infot, .infod {
+  border: 1px solid #999;
+  background: #eee;
+  padding: 5px;
+}
+
+.infot {
+  width: 240px;
+  text-align: right;
+  font-weight: bold;
+}
+
+.infor:hover {
+  background: #ffc;
+}
+
+.error {
+  border: 1px solid red;
+  background: #fee;
+  color: red;
+  padding: 10px;
+}
+
+.mandatory {
+  color: red;
+  font-size: 0.75em;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.nounderline {
+  text-decoration: none;
+}
+
+.hosticon {
+  height: 20px;
+}

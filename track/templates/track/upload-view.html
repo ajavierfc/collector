@@ -1,0 +1,79 @@
+{% extends "track/base.html" %}
+
+{% block content %}
+<table width=100%>
+  <tr>
+    <td class='infod' width=160><img width=160 src="{{ upload.release.title.cover_url }}" /></td>
+    <td class='infod'><br /><center><a href="{% url 'track:title-view' upload.release.title.id %}"><h2>{{ upload.release.title.title_text }}</h2></a>
+    <p class='pad2'>{{ upload.release.title.summary_text }}</p></center></td>
+  </tr>
+</table>
+
+<table width=100%>
+  <tr>
+    <td class='infot'>Muntador</td><td class='infod'>{{ upload.release.user }}</td>
+  </tr>
+  {% if upload.release.release_text %}
+  <tr>
+    <td class='infot'>Comentari del muntador</td><td class='infod'>{{ upload.release.release_text }}</td>
+  </tr>
+  {% endif %}
+  {% if upload.release.video_text %}
+  <tr>
+    <td class='infot'>Informació del vídeo</td><td class='infod'>{{ upload.release.video_text }}</td>
+  </tr>
+  {% endif %}
+  {% if upload.release.audio_text %}
+  <tr>
+    <td class='infot'>Informació del àudio</td><td class='infod'>{{ upload.release.audio_text }}</td>
+  </tr>
+  {% endif %}
+  {% if upload.release.subs_text %}
+  <tr>
+    <td class='infot'>Informació de subtítols</td><td class='infod'>{{ upload.release.subs_text }}</td>
+  </tr>
+  {% endif %}
+</table>
+
+<br /><br />
+
+<table width=100%>
+  <tr><td class='table-header' colspan='3'><center><h2>Descàrrega</h2></center></td></tr>
+  {% if user.id == upload.user.id or user.is_staff %}
+  <tr>
+    <td colspan='3' class='infod' style='text-align: right'>
+      <a href="{% url 'track:upload-delete' upload.id 'no' %}">Borrar</a>&nbsp;
+      <a href="{% url 'track:upload-edit' upload.id %}">Editar</a>
+    </td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td colspan='3'>
+      <table width=100%>
+        <tr>
+          <td class='infot'>Pujat per</td><td class='infod'>{{ upload.user }}</td>
+        </tr>
+        <tr>
+          <td class='infot' rowspan='2'>Informació dels enllaços</td><td class='infod'>{{ upload.link_set.count }}, actualitzats el {{ upload.pub_date|date:'d.m.Y' }}</td>
+        </tr>
+        <tr>
+          <td class='infod'>{{ upload.host_list }}</td>
+        </tr>
+        {% if upload.upload_text %}
+        <tr>
+          <td class='infot'>Comentari del uploader</td><td class='infod'>{{ upload.upload_text }}</td>
+        </tr>
+        {% endif %}
+      </table>
+      <br />
+    </td>
+  </tr>
+  {% for link in upload.link_set.all %}
+  <tr>
+    <td class='infod' width=30px>{{ forloop.counter }}</td>
+    <td class='infod' width=100px>{{ link.host }}</td>
+    <td class='infod'><a href="{{ link.link_url }}">{{ link.link_text|truncatechars:80 }}</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

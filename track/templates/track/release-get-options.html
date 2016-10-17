@@ -1,0 +1,6 @@
+{% for release in release_list %}
+  {# <option value="{{ release.id }}" {% if forloop.counter == 1 %}selected="selected"{% endif %}> #}
+  <option value="{{ release.id }}">
+    {% if release.release_text == '' %}{{ release.title.title_text }}{% else %}{{ release.release_text }}{% endif %} | {{ release.user }} | {{ release.pub_date|date:'d.m.y' }}
+  </option>
+{% endfor %}

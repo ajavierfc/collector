@@ -1,0 +1,62 @@
+{% extends "track/base.html" %}
+
+{% block content %}
+<div class='table-header'><h2>Nou anime/manga</h2></div>
+
+{% if error_message %}<p class='error'><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form method="POST" action="{% if title %}{% url 'track:title-save' title.id %}{% else %}{% url 'track:title-save' 0 %}{% endif %}">
+  {% csrf_token %}
+
+  <label for="title_text">Títol</label><span class='mandatory'>*</span>
+  <br />
+  <input size="80" name="title_text" id="title_text" value="{% if request.POST %}{{ request.POST.title_text }}{% elif title %}{{ title.title_text }}{% endif %}" autofocus />
+  <br />
+  <br />
+
+  <label for="year_start">Any d'inici</label>
+  <br />
+  <input size="80" name="year_start" id="year_start" value="{% if request.POST %}{{ request.POST.year_start }}{% elif title %}{{ title.year_start }}{% endif %}" />
+  <br />
+  <br />
+
+  <label for="year_end">Any final</label>
+  <br />
+  <input size="80" name="year_end" id="year_end" value="{% if request.POST %}{{ request.POST.year_end }}{% elif title %}{{ title.year_end }}{% endif %}" />
+  <br />
+  <br />
+
+  <label for="episodes">Total d'episodis</label>
+  <br />
+  <input size="80" name="episodes" id="episodes" value="{% if request.POST %}{{ request.POST.episodes }}{% elif title %}{{ title.episodes }}{% endif %}" />
+  <br />
+  <br />
+
+  <label for="runtime_minutes">Duració en minuts</label>
+  <br />
+  <input size="80" name="runtime_minutes" id="runtime_minutes" value="{% if request.POST %}{{ request.POST.runtime_minutes }}{% elif title %}{{ title.runtime_minutes }}{% endif %}" />
+  <br />
+  <br />
+
+  <label for="cover_url">URL de la imatge de portada</label><span class='mandatory'>*</span>
+  <br />
+  <input size="80" name="cover_url" id="cover_url" value="{% if request.POST %}{{ request.POST.cover_url }}{% elif title %}{{ title.cover_url }}{% endif %}" />
+  <br />
+  <br />
+
+  <label for="summary_text">Sinopsi</label>
+  <br />
+  <textarea cols="100" rows="16" name="summary_text" id="summary_text" />{% if request.POST %}{{ request.POST.summary_text }}{% elif title %}{{ title.summary_text }}{% endif %}</textarea>
+  <br />
+  <br />
+
+  <input type="submit" value="Guardar">
+  
+  {% if user.is_staff %}
+  <br />
+  <br />
+  <label for="status">Estat (0 = Editable/No verificat; 1 = Verificat): </label>
+  <input id="status" name="status" value="{{ title.status }}" />
+  {% endif %}
+</form>
+{% endblock %}

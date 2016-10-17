@@ -1,0 +1,49 @@
+{% extends "track/base.html" %}
+
+{% block content %}
+<div class='table-header'><h2>{% if not release %}Nova release{% else %}Release{% endif %} de {{ title.title_text }}</h2></div>
+
+{% if error_message %}<p class='error'><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form method="POST" action="{% if release %}{% url 'track:release-save' title.id release.id %}{% else %}{% url 'track:release-save' title.id 0 %}{% endif %}">
+  {% csrf_token %}
+  <label for="release_text">Títol de la release</label><span class='mandatory'>*</span>
+  <br />
+  <input size="80" name="release_text" id="release_text" value="{% if request.POST %}{{ request.POST.release_text }}{% else %}{{ release.release_text }}{% endif %}" autofocus />
+  <br />
+  <br />
+
+  <label for="video_text">Informació del vídeo</label><span class='mandatory'>*</span>
+  <br />
+  <input size="80" name="video_text" id="video_text" value="{% if request.POST %}{{ request.POST.video_text }}{% else %}{{ release.video_text }}{% endif %}" />
+  <br />
+  <br />
+
+  <label for="audio_text">Informació del àudio</label><span class='mandatory'>*</span>
+  <br />
+  <input size="80" name="audio_text" id="audio_text" value="{% if request.POST %}{{ request.POST.audio_text }}{% else %}{{ release.audio_text }}{% endif %}" />
+  <br />
+  <br />
+
+  <label for="subs_text">Informació dels subtítols</label>
+  <br />
+  <input size="80" name="subs_text" id="subs_text" value="{% if request.POST %}{{ request.POST.subs_text }}{% else %}{{ release.subs_text }}{% endif %}" />
+  <br />
+  <br />
+
+  {% if not release or release.upload_set.count == 1 %}
+  <label for="upload_text">Comentari del enllaços (indicacions, contrasenyes, ...)</label>
+  <br />
+  <input size="80" name="upload_text" id="upload_text" value="{% if request.POST %}{{ request.POST.upload_text }}{% else %}{{ release.upload_set.first.upload_text }}{% endif %}" />
+  <br />
+  <br />
+  <label for="links">Enganxeu aquí els enllaços</label><span class='mandatory'>*</span>
+  <br />
+  <textarea cols="100" rows="26" name="links" id="links" value="">{% if request.POST %}{{ request.POST.links }}{% elif release %}{% for link in release.upload_set.first.link_set.all %}{{ link.get_link_line }}{% endfor %}{% endif %}</textarea>
+  <br />
+  <br />
+  {% endif %}
+
+  <input type="submit" value="Guardar">
+</form>
+{% endblock %}

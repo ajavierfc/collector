@@ -1,0 +1,11 @@
+{% extends "track/base.html" %}
+
+{% block content %}
+<div class='dialog'>
+  <span>Confirmeu que voleu esborrar els <strong>{{ upload.link_set.count }}</strong> enllaços de "<strong>{{ upload.release.title.title_text }}</strong>"?</span>
+  <br />
+  <br />
+  <span class='dialog-button'><a href="{% url 'track:upload-delete' upload.id 'yes' %}">Sí</a></span>
+  <span class='dialog-button'><a href="{% url 'track:title-view' upload.release.title.id %}">No</a></span>
+</div>
+{% endblock %}

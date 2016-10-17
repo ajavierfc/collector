@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ca_ES">
+<head>
+  <link href="{% static 'track/style.css' %}" rel="stylesheet" type="text/css" />
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <title>{% block title %}Animelliure Track{% endblock %}</title>
+  {% block head %}{% endblock %}
+</head>
+<body {% block body %}{% endblock %}>
+  <div id="banner">
+    <img src='http://web.animelliure.net/images/site-logo-2.png' width=840 />
+  </div>
+  <div id="headbar">
+    <table width=100%><tr>
+      <td>
+        <table><tr>
+           <td class='header-button'><a href="{% url 'track:index' %}">TRACK</a></td>
+           <td class='header-button'><a href="{% url 'track:title-list' %}">TÍTOLS</a></td>
+           {% if user.is_authenticated %}
+             <td class='header-button'><a href="{% url 'track:title-edit' 0 %}">NOU TÍTOL</a></td>
+             <td class='header-button'><a href="{% url 'track:upload-edit' 0 %}">NOVA PUJADA</a></td>
+           {% endif %}
+        </tr></table>
+      </td>
+      <td width=10 class='medium pad1' style='text-align: right'>
+        {% if user.is_authenticated %}
+          {{ user.username }}<br />
+          <a href="{% url 'track:auth-logout' %}?next={{ request.path|urlencode }}">desconnecta</a>
+        {% else %}
+          &nbsp;<br />&nbsp;
+        {% endif %}
+      </td>
+     {% if not user.is_authenticated %}
+       <td width=20>
+         <table width=20><tr>
+           <td width=20 class='header-button'><a href="{% url 'track:auth-login' %}?next={{ request.path|urlencode }}">CONNECTA</a></td>
+         </tr></table>
+       </td>
+     {% endif %}
+    </tr></table>
+  </div>
+  <div id="content">
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

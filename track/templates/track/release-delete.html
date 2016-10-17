@@ -1,0 +1,17 @@
+{% extends "track/base.html" %}
+
+{% block content %}
+<div class='dialog'>
+  <span>Confirmeu que voleu esborrar la release "<strong>{{ release.title.title_text }} - {{ release.release_text }}</strong>"?</span>
+  <br />
+  <br />
+  <br />
+  <span class='error'>S'esborraran tots els enllaços !!!</span>
+  <br />
+  <br />
+  <br />
+  <br />
+  <span class='dialog-button'><a href="{% url 'track:release-delete' release.title.id release.id 'yes' %}">Sí</a></span>
+  <span class='dialog-button'><a href="{% url 'track:title-view' release.title.id %}">No</a></span>
+</div>
+{% endblock %}

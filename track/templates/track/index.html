@@ -1,0 +1,41 @@
+{% extends "track/base.html" %}
+{% load static %}
+
+{% block content %}
+{% if upload_list %}
+  <table width=100% cellspacing=10px>
+    {% for upload in upload_list %}
+      <tr><td class='infod infor'>
+        <table width=100%>
+          <tr>
+            <td width=40px>
+              <img src="{{ upload.release.title.cover_url }}" width=36px />
+            </td>
+            <td>
+              <a href="{% url 'track:upload-view' upload.id %}">{{ upload.release.title.title_text }}</a>
+              <br /><span>{{ upload.release.release_text }}</span>
+              <br /><span class='small'>{{ upload.release.video_text }}</span>
+              {% if upload.user.id != upload.release.user.id %}<br /><span class='small'>Release de {{ upload.release.user }}</span>{% endif %}
+            </td>
+            <td width=32% style='text-align: right'>
+              <span>{{ upload.user }} - {{ upload.pub_date|date:'d.m.y H:i' }}</span><br /><br />
+{#              {% if upload.upload_text != '' %}<span>{{ upload.upload_text }}</span><br />{% endif %} #}
+              <span class='small'>{% for host in upload.get_upload_host_ordered %}
+                  <a href="{% url 'track:upload-view' upload.id %}" class='nounderline'>
+                  <img class='hosticon' src="{% static "track/images/"|add:host.host.image %}" title="{{ host.host }}" />
+                </a>
+              {% endfor %}</span>
+            </td>
+{#            <span style='float:right'> #}
+{#              <a href="{% url 'track:upload-delete' upload.id 'no' %}">Borrar</a>&nbsp; #}
+{#              <a href="{% url 'track:upload-edit' upload.id %}">Editar</a> #}
+{#              </span> #}
+          </tr>
+        </table>
+      </td></tr>
+    {% endfor %}
+  </table>
+{% else %}
+  <p>No n'hi ha de pujades</p>
+{% endif %}
+{% endblock %}

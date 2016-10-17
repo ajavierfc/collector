@@ -1,0 +1,83 @@
+{% extends "track/base.html" %}
+
+{% block head %}
+<script>
+  function getReleases(list, selectValue) {
+    saveButton = document.getElementById("save-button");
+    saveButton.disabled = true;
+    var params={'title_id': list.options[list.selectedIndex].value};
+    $.ajax({
+       data: params,
+       url: "{% url 'track:release-get-options' %}",
+       type: "GET",
+       success: function(response) {
+         releases = document.getElementById("release");
+         releases.innerHTML = "<option selected='selected' />" + response;
+         if (selectValue != 0)
+           for (i = 0; i < releases.options.length; i++)
+             if (releases.options[i].value == selectValue) {
+               releases.selectedIndex = i;
+               break;
+             }
+         saveButton.disabled = false;
+       }
+     }
+    );
+  }
+</script>
+{% endblock %}
+
+{% block body %}
+  {% if upload %}
+    onload="getReleases(document.getElementById('title'), {{ upload.release.id }});"
+  {% elif title_id %}
+    onload="getReleases(document.getElementById('title'), {{ release_id|default:'0' }});"
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class='table-header'><h2>Enllaços</h2></div>
+
+{% if error_message %}<p class='error'><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form method="POST" action="{% if upload %}{% url 'track:upload-save' upload.id %}{% else %}{% url 'track:upload-save' 0 %}{% endif %}">
+  {% csrf_token %}
+  <label for="titles">Escolliu l'anime</label><span class='mandatory'>*</span>
+  <br />
+  <select id="title" name="title_id" onchange="getReleases(this, 0);" {% if not upload and not release_id %}autofocus{% endif %}>
+    <option value="0">&nbsp;</option>
+    {% for title in titles_list %}
+    {% ifchanged title.title_text.0 %}
+       {% if forloop.counter > 1 %}</optgroup>{% endif %}
+       <optgroup label="{{ title.title_text.0 }}">
+    {% endifchanged %}
+    <option value="{{ title.id }}"
+      {% if upload and title.id == upload.release.title.id or title.id|slugify == title_id|slugify %}
+        selected='selected'
+      {% endif %}
+    >{{ title.title_text }}</option>
+    {% endfor %}
+    </optgroup>
+  </select>
+  <br />
+  <br />
+  <label for="release">Escolliu la release</label><span class='mandatory'>*</span>
+  <br />
+  <select id="release" name="release_id"></select>
+  <br />
+  <br />
+  <label for="upload_text">Comentari (indicacions, contrasenyes, ...)</label>
+  <br />
+  <input size="80" name="upload_text" id="upload_text" value="{% if request.POST %}{{ request.POST.upload_text }}{% else %}{{ upload.upload_text }}{% endif %}" />
+  <br />
+  <br />
+  <label for="links">Enganxeu aquí els enllaços</label><span class='mandatory'>*</span>
+  <br />
+  <textarea cols="100" rows="26" name="links" id="links" value="" {% if upload or release_id %}autofocus{% endif %}
+>{% if request.POST %}{{ request.POST.links }}{% elif upload %}{% for link in upload.link_set.all %}{{ link.get_link_line }}
+{% endfor %}{% endif %}</textarea>
+  <br />
+  <br />
+  <input id="save-button" type="submit" value="Guardar">
+</form>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "track/base.html" %}
+
+{% block content %}
+{% if title_list %}
+  <table width=100% cellspacing=10px>
+    {% for title in title_list %}
+      <tr><td class='infod infor'>
+        <div>
+          <a class='mar1' href="{% url 'track:title-view' title.id %}">{{ title.title_text }}</a>
+          {% if user.is_staff or user.is_authenticated and title.status == 0 %}
+          <span style='float:right'>
+            {% if user.is_staff %}<a href="{% url 'track:title-delete' title.id 'no' %}">Borrar</a>&nbsp;{% endif %}
+            <a href="{% url 'track:title-edit' title.id %}">Editar</a>
+          </span>
+          {% endif %}
+          <br />
+          {% if title.summary_text == '' %}
+            <span class='small'>{{ title.summary_text|truncatechars:80 }}</span>
+          {% endif %}
+        </div>
+      </td></tr>
+    {% endfor %}
+  </table>
+
+{% else %}
+  <p>No n'hi ha de animes</p>
+{% endif %}
+{% endblock %}
