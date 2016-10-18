@@ -28,10 +28,10 @@
 {% endblock %}
 
 {% block body %}
-  {% if upload %}
+  {% if request.POST %}
+    onload="getReleases(document.getElementById('title'), {{ request.POST.release_id|default:'0' }});"
+  {% elif upload %}
     onload="getReleases(document.getElementById('title'), {{ upload.release.id }});"
-  {% elif title_id %}
-    onload="getReleases(document.getElementById('title'), {{ release_id|default:'0' }});"
   {% endif %}
 {% endblock %}
 
@@ -44,7 +44,7 @@
   {% csrf_token %}
   <label for="titles">Escolliu l'anime</label><span class='mandatory'>*</span>
   <br />
-  <select id="title" name="title_id" onchange="getReleases(this, 0);" {% if not upload and not release_id %}autofocus{% endif %}>
+  <select id="title" name="title_id" onchange="getReleases(this, 0);" {% if not upload and not request.POST %}autofocus{% endif %}>
     <option value="0">&nbsp;</option>
     {% for title in titles_list %}
     {% ifchanged title.title_text.0 %}
@@ -52,7 +52,9 @@
        <optgroup label="{{ title.title_text.0 }}">
     {% endifchanged %}
     <option value="{{ title.id }}"
-      {% if upload and title.id == upload.release.title.id or title.id|slugify == title_id|slugify %}
+      {% if request.POST and request.POST.title_id|slugify == title.id|slugify %}
+        selected='selected'
+      {% elif not request.POST and upload and title.id == upload.release.title.id %}
         selected='selected'
       {% endif %}
     >{{ title.title_text }}</option>
@@ -73,7 +75,7 @@
   <br />
   <label for="links">Enganxeu aquí els enllaços</label><span class='mandatory'>*</span>
   <br />
-  <textarea cols="100" rows="26" name="links" id="links" value="" {% if upload or release_id %}autofocus{% endif %}
+  <textarea cols="100" rows="26" name="links" id="links" value="" {% if upload or request.POST.release_id|default:'0' != '0' %}autofocus{% endif %}
 >{% if request.POST %}{{ request.POST.links }}{% elif upload %}{% for link in upload.link_set.all %}{{ link.get_link_line }}
 {% endfor %}{% endif %}</textarea>
   <br />

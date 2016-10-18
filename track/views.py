@@ -29,25 +29,14 @@ def upload_view(request, upload_id):
 def upload_edit_error(request, upload_id, error):
   titles_list = Title.objects.all().order_by('title_text')
 
-  title_id = None
-  release_id = None
-  links = None
   upload = None
-
   if upload_id != '0':
     upload = get_object_or_404(Upload, pk=upload_id)
     if not upload.can_modify(request):
       return unauthorized()
 
-  if request.POST.get('title_id') or "" != "":
-    title_id = int(request.POST.get('title_id'))
-  if request.POST.get('release_id') or "" != "":
-    release_id = int(request.POST.get('release_id'))
-
   return render(request, 'track/upload-edit.html', {'titles_list': titles_list,
                                                     'upload': upload,
-                                                    'title_id': title_id,
-                                                    'release_id': release_id,
                                                     'error_message': error})
 
 @login_required
