@@ -19,6 +19,9 @@ class Title(models.Model):
   #
   def get_release_list(self):
     return self.release_set.all().order_by('-pub_date')
+  #
+  def can_modify(self, request):
+    return request.user.is_staff or self.status == 0
 
 class User(models.Model):
   avatar_url = models.CharField(max_length=200)
@@ -35,8 +38,12 @@ class Release(models.Model):
   #
   def __str__(self):
     return self.release_text;
+  #
   def get_upload_list(self):
     return self.upload_set.all().order_by('-pub_date')
+  #
+  def can_modify(self, request):
+    return request.user.is_staff or self.user.id == request.user.id
 
 class Upload(models.Model):
   release = models.ForeignKey(Release, on_delete=models.CASCADE)
@@ -55,6 +62,9 @@ class Upload(models.Model):
   #
   def get_upload_host_ordered(self):
     return self.upload_host_set.order_by('host')
+  #
+  def can_modify(self, request):
+    return request.user.is_staff or self.user.id == request.user.id
 
 class Host(models.Model):
   hostname = models.CharField(max_length=100, primary_key=True)

@@ -36,7 +36,7 @@ def upload_edit_error(request, upload_id, error):
 
   if upload_id != '0':
     upload = get_object_or_404(Upload, pk=upload_id)
-    if not request.user.is_staff and upload.user.id != request.user.id:
+    if not upload.can_modify(request):
       return unauthorized()
 
   if request.POST.get('title_id') or "" != "":
@@ -67,7 +67,7 @@ def upload_edit(request, upload_id):
 
   if upload_id != '0':
     u = get_object_or_404(Upload, pk=upload_id)
-    if not request.user.is_staff and u.user.id != request.user.id:
+    if not u.can_modify(request):
       return unauthorized()
     u.upload_text = request.POST.get('upload_text')
     u.release_id = request.POST.get('release_id')
@@ -87,7 +87,7 @@ def upload_edit(request, upload_id):
 def upload_delete(request, upload_id):
   try:
     upload = get_object_or_404(Upload, pk=upload_id)
-    if not request.user.is_staff and request.user.id != upload.user.id:
+    if not upload.can_modify(request):
       return unauthorized()
   except:
     return HttpResponseRedirect(reverse('track:index', args=()))
@@ -154,6 +154,8 @@ def title_edit_error(request, title_id, error):
   title = None
   if title_id != '0':
     title = get_object_or_404(Title, pk=title_id)
+    if not title.can_modify(request):
+      return unauthorized()
   return render(request, 'track/title-edit.html', {'title': title, 'error_message': error})
 
 @login_required
@@ -169,6 +171,8 @@ def title_edit(request, title_id):
 
   if title_id != '0':
     t = get_object_or_404(Title, pk=title_id)
+    if t.can_modify(request):
+      return unauthorized()
     t.title_text = request.POST.get('title_text').strip()
     t.summary_text = request.POST.get('summary_text').strip()
     t.year_start = request.POST.get('year_start') or 0
@@ -215,7 +219,7 @@ def release_edit_error(request, title_id, release_id, error):
 
   if release_id != '0':
     release = get_object_or_404(Release, pk=release_id)
-    if not request.user.is_staff and release.user.id != request.user.id:
+    if not release.can_modify(request):
       return unauthorized()
 
   title = get_object_or_404(Title, pk=title_id)
@@ -242,7 +246,7 @@ def release_edit(request, title_id, release_id):
 
   if release_id != '0':
     r = get_object_or_404(Release, pk=release_id)
-    if not request.user.is_staff and r.user.id != request.user.id:
+    if not r.can_modify(request):
       return unauthorized()
     r.release_text = request.POST.get('release_text').strip()
     r.video_text = request.POST.get('video_text').strip()
@@ -274,7 +278,7 @@ def release_edit(request, title_id, release_id):
 def release_delete(request, title_id, release_id):
   try:
     release = get_object_or_404(Release, pk=release_id)
-    if not request.user.is_staff and request.user.id != release.user.id:
+    if not release.can_modify(request):
       return unauthorized()
   except:
     return HttpResponseRedirect(reverse('track:index', args=()))
