@@ -7,19 +7,19 @@
 
 <form method="post" action="{% url 'track:auth-register' %}">
   {% csrf_token %}
-  <input type="hidden" name="next" value="{{ request.GET.next|default:next }}" />
+  <input type="hidden" name="next" value="{% if request.POST %}{{ request.POST.next }}{% else %}{{ request.GET.next }}{% endif %}" />
   <table>
     <tr>
-      <td class='infot'>Nom d'usuari</td><td><input style='margin-top: 0' id="username" name="username" value="{{ username|default:"" }}" autofocus /></td>
+      <td class='infot'>Nom d'usuari</td><td><input style='margin-top: 0' id="username" name="username" value="{{ request.POST.username }}" autofocus /></td>
     </tr>
     <tr>
-      <td class='infot'>Contrasenya</td><td><input style='margin-top: 0' id="password" name="password" type="password" value="{{ password|default:"" }}" /></td>
+      <td class='infot'>Contrasenya</td><td><input style='margin-top: 0' id="password" name="password" type="password" value="{{ request.POST.password }}" /></td>
     </tr>
     <tr>
-      <td class='infot'>Repetiu la contrasenya</td><td><input style='margin-top: 0' id="password2" name="password2" type="password" value="{{ password2|default:"" }}" /></td>
+      <td class='infot'>Repetiu la contrasenya</td><td><input style='margin-top: 0' id="password2" name="password2" type="password" value="{{ request.POST.password2 }}" /></td>
     </tr>
     <tr>
-      <td class='infot'>Adreça electrònica</td><td><input style='margin-top: 0' id="email" name="email" type="email" value="{{ email|default:"" }}" /></td>
+      <td class='infot'>Adreça electrònica</td><td><input style='margin-top: 0' id="email" name="email" type="email" value="{{ request.POST.email }}" /></td>
     </tr>
     <tr>
       <td colspan='2'><br /><input type="submit" value="Registrar" /></td>

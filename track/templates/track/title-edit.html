@@ -5,7 +5,7 @@
 
 {% if error_message %}<p class='error'><strong>{{ error_message }}</strong></p>{% endif %}
 
-<form method="POST" action="{% if title %}{% url 'track:title-save' title.id %}{% else %}{% url 'track:title-save' 0 %}{% endif %}">
+<form method="POST" action="{% url 'track:title-edit' title.id|default:0 %}">
   {% csrf_token %}
 
   <label for="title_text">Títol</label><span class='mandatory'>*</span>
@@ -56,7 +56,7 @@
   <br />
   <br />
   <label for="status">Estat (0 = Editable/No verificat; 1 = Verificat): </label>
-  <input id="status" name="status" value="{{ title.status }}" />
+  <input id="status" name="status" value="{{ title.status|default:0 }}" />
   {% endif %}
 </form>
 {% endblock %}

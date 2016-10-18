@@ -30,10 +30,12 @@ def auth_logout(request):
 
 def auth_register(request):
   error_message = None
-  username = request.POST.get('username')
-  password =  request.POST.get('password')
-  email = request.POST.get('email')
-  if username is not None:
+
+  if request.POST:
+    username = request.POST.get('username')
+    password =  request.POST.get('password')
+    email = request.POST.get('email')
+
     if password == "" or len(password) < 7:
       error_message = 'La contrasenya no és vàlida (mínim 7 caràcters)'
     elif password != request.POST.get('password2'):
@@ -55,7 +57,4 @@ def auth_register(request):
 
       return auth_login(request)
 
-  return render(request, 'track/auth-register.html', {'username': username,
-                                                      'email': email,
-                                                      'error_message': error_message,
-                                                      'next': request.POST.get('next')})
+  return render(request, 'track/auth-register.html', {'error_message': error_message})

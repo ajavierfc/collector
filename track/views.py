@@ -52,10 +52,9 @@ def upload_edit_error(request, upload_id, error):
 
 @login_required
 def upload_edit(request, upload_id):
-  return upload_edit_error(request, upload_id, '')
+  if not request.POST:
+    return upload_edit_error(request, upload_id, '')
 
-@login_required
-def upload_save(request, upload_id):
   if request.POST.get('title_id') == '0':
     return upload_edit_error(request, upload_id, "No hi ha cap anime seleccionat")
 
@@ -159,14 +158,8 @@ def title_edit_error(request, title_id, error):
 
 @login_required
 def title_edit(request, title_id):
-  if not request.user.is_staff:
-    return unauthorized()
-  return title_edit_error(request, title_id, '')
-
-@login_required
-def title_save(request, title_id):
-  if not request.user.is_staff:
-    return unauthorized()
+  if not request.POST:
+    return title_edit_error(request, title_id, '')
 
   if request.POST.get('title_text').strip() == '':
     return title_edit_error(request, title_id, "El títol no pot estar buit")
@@ -230,18 +223,17 @@ def release_edit_error(request, title_id, release_id, error):
 
 @login_required
 def release_edit(request, title_id, release_id):
-  return release_edit_error(request, title_id, release_id, '')
+  if not request.POST:
+    return release_edit_error(request, title_id, release_id, '')
 
-@login_required
-def release_save(request, title_id, release_id):
   if request.POST.get('release_text').strip() == '':
     return release_edit_error(request, title_id, release_id, "Falta un comentari breu de la release")
 
   if request.POST.get('video_text').strip() == '':
-    return release_edit_error(request, title_id, release_id, "Heu d'introduïr la informació del vídeo")
+    return release_edit_error(request, title_id, release_id, "Heu d'introduir la informació del vídeo")
 
   if request.POST.get('audio_text').strip() == '':
-    return release_edit_error(request, title_id, release_id, "Heu d'introduïr la informació del àudio")
+    return release_edit_error(request, title_id, release_id, "Heu d'introduir la informació del àudio")
 
   if release_id == '0':
     links_str = request.POST.get('links').strip()
