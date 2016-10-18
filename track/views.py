@@ -160,7 +160,7 @@ def title_edit(request, title_id):
 
   if title_id != '0':
     t = get_object_or_404(Title, pk=title_id)
-    if t.can_modify(request):
+    if not t.can_modify(request):
       return unauthorized()
     t.title_text = request.POST.get('title_text').strip()
     t.summary_text = request.POST.get('summary_text').strip()
