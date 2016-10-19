@@ -94,8 +94,8 @@ class Link(models.Model):
     elif self.link_url[-8:] == '.torrent':
       return 'torrent'
     else:
-      match = re.findall(r'(?:^[a-z0-9]+\:\/\/)([^\/]+)', self.link_url, flags=re.IGNORECASE)
-      if len(match) > 0: return match[0].lower()
+      match = re.findall(r'(?:^[a-z0-9]+\:\/\/)([^\/]+)', self.link_url.lower())
+      if len(match) > 0: return match[0]
       else: return self.link_url
 
   #
