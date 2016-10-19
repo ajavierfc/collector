@@ -88,6 +88,9 @@ def upload_delete(request, upload_id):
 
 @login_required
 def upload_link_save(upload, links_text):
+  def nl_protocol(protocol):
+    return "\n" + protocol.group(0).lower()
+
   from django.db import IntegrityError
   from zlib import crc32
 
@@ -101,11 +104,12 @@ def upload_link_save(upload, links_text):
   upload.upload_host_set.all().delete()
 
   host_list = []
-  links = re.compile(r'(.[^\<\n]+)\<?(.+)?').findall(links_text.strip() +"\n")
+  links_text = re.sub(r'((?<!\n)(ed2k|http|https|ftp)://|magnet:\?)', nl_protocol, links_text, flags=re.IGNORECASE)
+  links = re.compile(r'(\w[^\<\n]+)\<?(.+)?').findall(links_text)
   for link, title in links:
     if title.strip() == "": title = link
     l = Link(link_url = link.strip(),
-             link_text = title.strip(),
+             link_text = title.strip()[:200],
              upload_id = upload.id)
 
     l.host_id = l.get_host()
