@@ -113,13 +113,14 @@ def upload_link_save(upload, links_text):
              upload_id = upload.id)
 
     l.host_id = l.get_host()
-    l.save()
     if l.host_id not in host_list:
-      Upload_Host(upload_id = upload.id, host_id = l.host_id).save()
       try:
         Host(hostname = l.host_id).save(force_insert = True)
       except IntegrityError:
         pass
+    l.save()
+    if l.host_id not in host_list:
+      Upload_Host(upload_id = upload.id, host_id = l.host_id).save()
       host_list.append(l.host_id)
 
   host_list.sort()
